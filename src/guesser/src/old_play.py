@@ -20,8 +20,10 @@ NUM_CUPS = 3
 EPSILON = 5
 BALL = -1 
 
+centroids = [] 
+
 # base_pos = [(0, 100), (20, 100), (40, 100)] (L -> R) 
-# curr_pos = [0, 1, 2] # 0'th index is the cup in the 0'th base position  
+# curr_pos = [0, 1, 2] # 0'th cup on the left, 2 cup on the right 
 
 # next iter 
 # calculate centroids -> curr_pos 
@@ -79,54 +81,53 @@ def callback(img):
 			cX = int(M["m10"] / M["m00"])
 			cY = int(M["m01"] / M["m00"])
 
-			new_centroids.append([cX, cY])
+			#use list comprehension 
+			far = True 
+			for centroid in new_centroids: 
+				if euclidian([cX, cY], centroid) < EPSILON: 
+					far = False 
+			
+			if cY > 150: # rough upper bound 
+				far = False 
+
+			if far and len(new_centroids) < NUM_CUPS: 
+				new_centroids.append([cX, cY])
 
 			# put text and highlight the center
 			cv2.circle(img_mask, (cX, cY), 5, (0, 0, 0), -1)
 
-	# if len(base_pos) == 0: 
-	# 	curr_pos = new_centroids 
-	# 	base_pos = new_centroids 
-	# 	curr_order = list(range(NUM_CUPS))
-	# else: 
-	# 	for n in new_centroids: 
-	# 		dist = np.array(list(map(lambda c: euclidian(n, c), list(base_pos))))
-	# 		away_from_base = np.min(dist) > EPSILON 
+	global centroids 
+	if len(centroids) == 0: 
+		centroids = new_centroids 
+		return 
 
-	# 		dist = np.array(list(map(lambda c: euclidian(n, c), list(cur_pos))))
-	# 		moving = np.min(dist) > EPSILON 
-
-	# 		if away_from_base and moving: 
-	# 			if cup1 == -1: 
-	# 				cup1 = # cup 
-	# 			else: 
-	# 				cup2 = # cup 
-	# 		elif not away_from_base and not moving: 
-	# 			assert (cup1 == -1 and cup2 == -1) or (cup1 != -1 and cup2 != -1)
-	# 			if cup1 != -1 and cup2 != -1: 
-	# 				i1 = curr_order.index(cup1) 
-	# 				i2 = curr_order.index(cup2) 
-	# 				curr_order[i1] = cup2 
-	# 				curr_order[i2] = cup1 
-
-				# update base pos? 
-
-		# ? 
-		curr_pos = new_centroids 
-
+	print("new")
+	print(new_centroids)
+	
 	a_img_u = cv2.resize(src=img_mask, dsize=(img_array.shape[1], img_array.shape[0]), interpolation=cv2.INTER_NEAREST)
 	a_img_message = np_img_to_ros(a_img_u.astype(np.uint8))
 
-	# assert len(curr_pos) == len(base_pos) == len(curr_order) == NUM_CUPS 
-
 	try:
 		pub_annotated.publish(a_img_message)
-		#print(base_pos)
-		#print(curr_pos)
-		#print(curr_order)
-		#print("__________________________________________")
 	except rospy.ROSInterruptException: pass
 	
+	ordered = [[float('inf'), float('inf')] for _ in range(NUM_CUPS)]
+
+	for n in new_centroids: 
+		dist = np.array(list(map(lambda c: euclidian(n, c), list(centroids))))
+		cup = np.argmin(dist)
+		ordered[cup] = n 
+
+	print('old')
+	print(centroids)
+	centroids = ordered
+	assert len(centroids) == NUM_CUPS 
+
+	print("order")
+	print(centroids)
+
+	print("____________")
+	x = input() 
 
 def observe(): 
 	rospy.Subscriber("/usb_cam/image_raw", Image, callback)

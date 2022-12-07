@@ -29,6 +29,8 @@ At time 1670431105.508
             in RPY (degree) [-0.599, 70.500, 14.468]
 = ar marker 8 
 error = [?, 0.132, ? ]
+ar - tip = 0.1 
+tip = ar - 0.1
 
 - Translation: [0.595, -0.278, -0.092]
 - Rotation: in Quaternion [-0.012, 0.991, -0.110, 0.075]
