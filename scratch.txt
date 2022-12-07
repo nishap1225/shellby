@@ -1,276 +1,45 @@
-Failure at 1670298956.104552833
-Exception thrown:"sd" passed to lookupTransform argument target_frame does not exist. 
-The current list of frames is:
-Frame base exists with parent ar_marker_4.
-Frame reference/base exists with parent world.
-Frame head exists with parent right_l0.
-Frame right_l0 exists with parent right_arm_base_link.
-Frame right_arm_base_link exists with parent base.
-Frame right_l1 exists with parent right_l0.
-Frame right_l2 exists with parent right_l1.
-Frame right_l3 exists with parent right_l2.
-Frame right_l4 exists with parent right_l3.
-Frame right_l5 exists with parent right_l4.
-Frame right_l6 exists with parent right_l5.
-Frame reference/head exists with parent reference/right_l0.
-Frame reference/right_l0 exists with parent reference/right_arm_base_link.
-Frame reference/right_arm_base_link exists with parent reference/base.
-Frame reference/right_l1 exists with parent reference/right_l0.
-Frame reference/right_l2 exists with parent reference/right_l1.
-Frame reference/right_l3 exists with parent reference/right_l2.
-Frame reference/right_l4 exists with parent reference/right_l3.
-Frame reference/right_l5 exists with parent reference/right_l4.
-Frame reference/right_l6 exists with parent reference/right_l5.
-Frame reference/controller_box exists with parent reference/base.
-Frame reference/screen exists with parent reference/head.
-Frame reference/head_camera exists with parent reference/head.
-Frame reference/pedestal_feet exists with parent reference/base.
-Frame reference/pedestal exists with parent reference/base.
-Frame reference/right_arm_itb exists with parent reference/right_l4.
-Frame reference/right_connector_plate_base exists with parent reference/right_gripper_base.
-Frame reference/right_gripper_base exists with parent reference/right_hand.
-Frame reference/right_connector_plate_mount exists with parent reference/right_connector_plate_base.
-Frame reference/right_electric_gripper_base exists with parent reference/right_connector_plate_mount.
-Frame reference/right_hand exists with parent reference/right_l6.
-Frame reference/right_gripper_l_finger_tip exists with parent reference/right_gripper_l_finger.
-Frame reference/right_gripper_r_finger_tip exists with parent reference/right_gripper_r_finger.
-Frame reference/right_gripper_tip exists with parent reference/right_gripper_base.
-Frame reference/right_hand_camera exists with parent reference/right_l5.
-Frame reference/right_l1_2 exists with parent reference/right_l1.
-Frame reference/right_l2_2 exists with parent reference/right_l2.
-Frame reference/right_l4_2 exists with parent reference/right_l4.
-Frame reference/right_torso_itb exists with parent reference/right_l0.
-Frame reference/right_wrist exists with parent reference/right_l5.
-Frame reference/torso exists with parent reference/base.
-Frame controller_box exists with parent base.
-Frame screen exists with parent head.
-Frame head_camera exists with parent head.
-Frame pedestal_feet exists with parent base.
-Frame pedestal exists with parent base.
-Frame right_arm_itb exists with parent right_l4.
-Frame right_connector_plate_base exists with parent right_gripper_base.
-Frame right_gripper_base exists with parent right_hand.
-Frame right_connector_plate_mount exists with parent right_connector_plate_base.
-Frame right_electric_gripper_base exists with parent right_connector_plate_mount.
-Frame right_hand exists with parent right_l6.
-Frame right_gripper_l_finger_tip exists with parent right_gripper_l_finger.
-Frame right_gripper_l_finger exists with parent right_electric_gripper_base.
-Frame right_gripper_r_finger_tip exists with parent right_gripper_r_finger.
-Frame right_gripper_r_finger exists with parent right_electric_gripper_base.
-Frame right_gripper_tip exists with parent right_gripper_base.
-Frame right_hand_camera exists with parent right_l5.
-Frame right_l1_2 exists with parent right_l1.
-Frame right_l2_2 exists with parent right_l2.
-Frame right_l4_2 exists with parent right_l4.
-Frame right_torso_itb exists with parent right_l0.
-Frame right_wrist exists with parent right_l5.
-Frame torso exists with parent base.
-Frame ar_marker_4 exists with parent usb_cam.
+At time 1670430875.308
+- Translation: [0.562, -0.084, -0.084]
+- Rotation: in Quaternion [0.995, -0.029, 0.066, -0.074]
+            in RPY (radian) [-2.990, -0.128, -0.067]
+            in RPY (degree) [-171.286, -7.320, -3.847]
+= RIGHT GRIPPER TIP IN PLACE OF AR MARKER 6
 
-Failure at 1670298956.104759277
-Exception thrown:"sd" passed to lookupTransform argument target_frame does not exist. 
-The current list of frames is:
-Frame base exists with parent ar_marker_4.
-Frame reference/base exists with parent world.
-Frame head exists with parent right_l0.
-Frame right_l0 exists with parent right_arm_base_link.
-Frame right_arm_base_link exists with parent base.
-Frame right_l1 exists with parent right_l0.
-Frame right_l2 exists with parent right_l1.
-Frame right_l3 exists with parent right_l2.
-Frame right_l4 exists with parent right_l3.
-Frame right_l5 exists with parent right_l4.
-Frame right_l6 exists with parent right_l5.
-Frame reference/head exists with parent reference/right_l0.
-Frame reference/right_l0 exists with parent reference/right_arm_base_link.
-Frame reference/right_arm_base_link exists with parent reference/base.
-Frame reference/right_l1 exists with parent reference/right_l0.
-Frame reference/right_l2 exists with parent reference/right_l1.
-Frame reference/right_l3 exists with parent reference/right_l2.
-Frame reference/right_l4 exists with parent reference/right_l3.
-Frame reference/right_l5 exists with parent reference/right_l4.
-Frame reference/right_l6 exists with parent reference/right_l5.
-Frame reference/controller_box exists with parent reference/base.
-Frame reference/screen exists with parent reference/head.
-Frame reference/head_camera exists with parent reference/head.
-Frame reference/pedestal_feet exists with parent reference/base.
-Frame reference/pedestal exists with parent reference/base.
-Frame reference/right_arm_itb exists with parent reference/right_l4.
-Frame reference/right_connector_plate_base exists with parent reference/right_gripper_base.
-Frame reference/right_gripper_base exists with parent reference/right_hand.
-Frame reference/right_connector_plate_mount exists with parent reference/right_connector_plate_base.
-Frame reference/right_electric_gripper_base exists with parent reference/right_connector_plate_mount.
-Frame reference/right_hand exists with parent reference/right_l6.
-Frame reference/right_gripper_l_finger_tip exists with parent reference/right_gripper_l_finger.
-Frame reference/right_gripper_r_finger_tip exists with parent reference/right_gripper_r_finger.
-Frame reference/right_gripper_tip exists with parent reference/right_gripper_base.
-Frame reference/right_hand_camera exists with parent reference/right_l5.
-Frame reference/right_l1_2 exists with parent reference/right_l1.
-Frame reference/right_l2_2 exists with parent reference/right_l2.
-Frame reference/right_l4_2 exists with parent reference/right_l4.
-Frame reference/right_torso_itb exists with parent reference/right_l0.
-Frame reference/right_wrist exists with parent reference/right_l5.
-Frame reference/torso exists with parent reference/base.
-Frame controller_box exists with parent base.
-Frame screen exists with parent head.
-Frame head_camera exists with parent head.
-Frame pedestal_feet exists with parent base.
-Frame pedestal exists with parent base.
-Frame right_arm_itb exists with parent right_l4.
-Frame right_connector_plate_base exists with parent right_gripper_base.
-Frame right_gripper_base exists with parent right_hand.
-Frame right_connector_plate_mount exists with parent right_connector_plate_base.
-Frame right_electric_gripper_base exists with parent right_connector_plate_mount.
-Frame right_hand exists with parent right_l6.
-Frame right_gripper_l_finger_tip exists with parent right_gripper_l_finger.
-Frame right_gripper_l_finger exists with parent right_electric_gripper_base.
-Frame right_gripper_r_finger_tip exists with parent right_gripper_r_finger.
-Frame right_gripper_r_finger exists with parent right_electric_gripper_base.
-Frame right_gripper_tip exists with parent right_gripper_base.
-Frame right_hand_camera exists with parent right_l5.
-Frame right_l1_2 exists with parent right_l1.
-Frame right_l2_2 exists with parent right_l2.
-Frame right_l4_2 exists with parent right_l4.
-Frame right_torso_itb exists with parent right_l0.
-Frame right_wrist exists with parent right_l5.
-Frame torso exists with parent base.
-Frame ar_marker_4 exists with parent usb_cam.
+At time 1670430937.107
+- Translation: [0.593, 0.028, 0.001]
+- Rotation: in Quaternion [0.379, 0.418, 0.625, 0.539]
+            in RPY (radian) [1.200, -0.023, 1.702]
+            in RPY (degree) [68.772, -1.313, 97.503]
 
-Failure at 1670298957.084546913
-Exception thrown:"sd" passed to lookupTransform argument target_frame does not exist. 
-The current list of frames is:
-Frame base exists with parent ar_marker_4.
-Frame reference/base exists with parent world.
-Frame head exists with parent right_l0.
-Frame right_l0 exists with parent right_arm_base_link.
-Frame right_arm_base_link exists with parent base.
-Frame right_l1 exists with parent right_l0.
-Frame right_l2 exists with parent right_l1.
-Frame right_l3 exists with parent right_l2.
-Frame right_l4 exists with parent right_l3.
-Frame right_l5 exists with parent right_l4.
-Frame right_l6 exists with parent right_l5.
-Frame reference/head exists with parent reference/right_l0.
-Frame reference/right_l0 exists with parent reference/right_arm_base_link.
-Frame reference/right_arm_base_link exists with parent reference/base.
-Frame reference/right_l1 exists with parent reference/right_l0.
-Frame reference/right_l2 exists with parent reference/right_l1.
-Frame reference/right_l3 exists with parent reference/right_l2.
-Frame reference/right_l4 exists with parent reference/right_l3.
-Frame reference/right_l5 exists with parent reference/right_l4.
-Frame reference/right_l6 exists with parent reference/right_l5.
-Frame reference/controller_box exists with parent reference/base.
-Frame reference/screen exists with parent reference/head.
-Frame reference/head_camera exists with parent reference/head.
-Frame reference/pedestal_feet exists with parent reference/base.
-Frame reference/pedestal exists with parent reference/base.
-Frame reference/right_arm_itb exists with parent reference/right_l4.
-Frame reference/right_connector_plate_base exists with parent reference/right_gripper_base.
-Frame reference/right_gripper_base exists with parent reference/right_hand.
-Frame reference/right_connector_plate_mount exists with parent reference/right_connector_plate_base.
-Frame reference/right_electric_gripper_base exists with parent reference/right_connector_plate_mount.
-Frame reference/right_hand exists with parent reference/right_l6.
-Frame reference/right_gripper_l_finger_tip exists with parent reference/right_gripper_l_finger.
-Frame reference/right_gripper_r_finger_tip exists with parent reference/right_gripper_r_finger.
-Frame reference/right_gripper_tip exists with parent reference/right_gripper_base.
-Frame reference/right_hand_camera exists with parent reference/right_l5.
-Frame reference/right_l1_2 exists with parent reference/right_l1.
-Frame reference/right_l2_2 exists with parent reference/right_l2.
-Frame reference/right_l4_2 exists with parent reference/right_l4.
-Frame reference/right_torso_itb exists with parent reference/right_l0.
-Frame reference/right_wrist exists with parent reference/right_l5.
-Frame reference/torso exists with parent reference/base.
-Frame controller_box exists with parent base.
-Frame screen exists with parent head.
-Frame head_camera exists with parent head.
-Frame pedestal_feet exists with parent base.
-Frame pedestal exists with parent base.
-Frame right_arm_itb exists with parent right_l4.
-Frame right_connector_plate_base exists with parent right_gripper_base.
-Frame right_gripper_base exists with parent right_hand.
-Frame right_connector_plate_mount exists with parent right_connector_plate_base.
-Frame right_electric_gripper_base exists with parent right_connector_plate_mount.
-Frame right_hand exists with parent right_l6.
-Frame right_gripper_l_finger_tip exists with parent right_gripper_l_finger.
-Frame right_gripper_l_finger exists with parent right_electric_gripper_base.
-Frame right_gripper_r_finger_tip exists with parent right_gripper_r_finger.
-Frame right_gripper_r_finger exists with parent right_electric_gripper_base.
-Frame right_gripper_tip exists with parent right_gripper_base.
-Frame right_hand_camera exists with parent right_l5.
-Frame right_l1_2 exists with parent right_l1.
-Frame right_l2_2 exists with parent right_l2.
-Frame right_l4_2 exists with parent right_l4.
-Frame right_torso_itb exists with parent right_l0.
-Frame right_wrist exists with parent right_l5.
-Frame torso exists with parent base.
-Frame ar_marker_4 exists with parent usb_cam.
+= ar marker 6 
+error = [?, 0.112, ?] (marker - tip) 
 
-Failure at 1670298958.084613103
-Exception thrown:"sd" passed to lookupTransform argument target_frame does not exist. 
-The current list of frames is:
-Frame base exists with parent ar_marker_4.
-Frame reference/base exists with parent world.
-Frame head exists with parent right_l0.
-Frame right_l0 exists with parent right_arm_base_link.
-Frame right_arm_base_link exists with parent base.
-Frame right_l1 exists with parent right_l0.
-Frame right_l2 exists with parent right_l1.
-Frame right_l3 exists with parent right_l2.
-Frame right_l4 exists with parent right_l3.
-Frame right_l5 exists with parent right_l4.
-Frame right_l6 exists with parent right_l5.
-Frame reference/head exists with parent reference/right_l0.
-Frame reference/right_l0 exists with parent reference/right_arm_base_link.
-Frame reference/right_arm_base_link exists with parent reference/base.
-Frame reference/right_l1 exists with parent reference/right_l0.
-Frame reference/right_l2 exists with parent reference/right_l1.
-Frame reference/right_l3 exists with parent reference/right_l2.
-Frame reference/right_l4 exists with parent reference/right_l3.
-Frame reference/right_l5 exists with parent reference/right_l4.
-Frame reference/right_l6 exists with parent reference/right_l5.
-Frame reference/controller_box exists with parent reference/base.
-Frame reference/screen exists with parent reference/head.
-Frame reference/head_camera exists with parent reference/head.
-Frame reference/pedestal_feet exists with parent reference/base.
-Frame reference/pedestal exists with parent reference/base.
-Frame reference/right_arm_itb exists with parent reference/right_l4.
-Frame reference/right_connector_plate_base exists with parent reference/right_gripper_base.
-Frame reference/right_gripper_base exists with parent reference/right_hand.
-Frame reference/right_connector_plate_mount exists with parent reference/right_connector_plate_base.
-Frame reference/right_electric_gripper_base exists with parent reference/right_connector_plate_mount.
-Frame reference/right_hand exists with parent reference/right_l6.
-Frame reference/right_gripper_l_finger_tip exists with parent reference/right_gripper_l_finger.
-Frame reference/right_gripper_r_finger_tip exists with parent reference/right_gripper_r_finger.
-Frame reference/right_gripper_tip exists with parent reference/right_gripper_base.
-Frame reference/right_hand_camera exists with parent reference/right_l5.
-Frame reference/right_l1_2 exists with parent reference/right_l1.
-Frame reference/right_l2_2 exists with parent reference/right_l2.
-Frame reference/right_l4_2 exists with parent reference/right_l4.
-Frame reference/right_torso_itb exists with parent reference/right_l0.
-Frame reference/right_wrist exists with parent reference/right_l5.
-Frame reference/torso exists with parent reference/base.
-Frame controller_box exists with parent base.
-Frame screen exists with parent head.
-Frame head_camera exists with parent head.
-Frame pedestal_feet exists with parent base.
-Frame pedestal exists with parent base.
-Frame right_arm_itb exists with parent right_l4.
-Frame right_connector_plate_base exists with parent right_gripper_base.
-Frame right_gripper_base exists with parent right_hand.
-Frame right_connector_plate_mount exists with parent right_connector_plate_base.
-Frame right_electric_gripper_base exists with parent right_connector_plate_mount.
-Frame right_hand exists with parent right_l6.
-Frame right_gripper_l_finger_tip exists with parent right_gripper_l_finger.
-Frame right_gripper_l_finger exists with parent right_electric_gripper_base.
-Frame right_gripper_r_finger_tip exists with parent right_gripper_r_finger.
-Frame right_gripper_r_finger exists with parent right_electric_gripper_base.
-Frame right_gripper_tip exists with parent right_gripper_base.
-Frame right_hand_camera exists with parent right_l5.
-Frame right_l1_2 exists with parent right_l1.
-Frame right_l2_2 exists with parent right_l2.
-Frame right_l4_2 exists with parent right_l4.
-Frame right_torso_itb exists with parent right_l0.
-Frame right_wrist exists with parent right_l5.
-Frame torso exists with parent base.
-Frame ar_marker_4 exists with parent usb_cam.
 
+At time 1670431070.418
+- Translation: [0.561, 0.105, -0.092]
+- Rotation: in Quaternion [-0.021, 0.999, 0.023, 0.026]
+            in RPY (radian) [3.096, 0.054, -3.102]
+            in RPY (degree) [177.411, 3.067, -177.711]
+= RIGHT GRIPPER TIP IN PLACE OF AR MARKER 8 
+
+At time 1670431105.508
+- Translation: [0.537, 0.237, 0.003]
+- Rotation: in Quaternion [-0.077, 0.572, 0.106, 0.810]
+            in RPY (radian) [-0.010, 1.230, 0.253]
+            in RPY (degree) [-0.599, 70.500, 14.468]
+= ar marker 8 
+error = [?, 0.132, ? ]
+
+- Translation: [0.595, -0.278, -0.092]
+- Rotation: in Quaternion [-0.012, 0.991, -0.110, 0.075]
+            in RPY (radian) [-2.918, 0.146, -3.101]
+            in RPY (degree) [-167.214, 8.375, -177.656]
+= right gripper tip in place of ar marker 5
+
+- Translation: [0.669, -0.174, 0.016]
+- Rotation: in Quaternion [-0.427, 0.396, -0.539, 0.608]
+            in RPY (radian) [-1.243, 0.020, -1.466]
+            in RPY (degree) [-71.230, 1.149, -83.971]
+= ar marker 5 
+
+error = [?, 0.104, ?]
