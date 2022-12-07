@@ -18,7 +18,7 @@ from geometry_msgs.msg import PoseStamped, Point, Quaternion, Pose
 from path_planner import PathPlanner
 from shape_msgs.msg import SolidPrimitive
 
-
+from controller import Controller
 
 
 # list of poses
@@ -135,8 +135,8 @@ def switch_shells(shell_1_str, shell_2_str, shell_3_str):
     rospy.sleep(1.0)
 
     print(131)
-    #planner.add_cylinder_obstacle(size, 'shell_2', shell_2)
-    #planner.add_cylinder_obstacle(size, 'shell_3', shell_3)
+    planner.add_cylinder_obstacle(size, 'shell_2', shell_2)
+    planner.add_cylinder_obstacle(size, 'shell_3', shell_3)
     plan = planner.plan_to_pose(shell_1, [orien_const])
     print('going to get first shell')
     planner.execute_plan(plan[1])              #move to shell 1
@@ -198,19 +198,26 @@ def main():
     """
 
     planner = PathPlanner("right_arm")
-    planner.remove_obstacle('shell_2')
-    planner.remove_obstacle('shell_3')
+    Kp = 0.2 * np.array([0.4, 2, 1.7, 1.5, 2, 2, 3])
+    Kd = 0.01 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
+    Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
+    Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
+
+    controller = Controller(Kp, Kd, Ki, Kw, Limb("right"))
+
+    planner.remove_obstacle('table')
+    # planner.remove_obstacle('shell_3')
 
     #Create a path constraint for the arm 
     
-    orien_const = OrientationConstraint()
-    orien_const.link_name = "right_gripper";
-    orien_const.header.frame_id = "base";
-    orien_const.orientation.z = -1.0;
-    orien_const.absolute_x_axis_tolerance = 0.1;
-    orien_const.absolute_y_axis_tolerance = 0.1;
-    orien_const.absolute_z_axis_tolerance = 0.1;
-    orien_const.weight = 2.0;
+    # orien_const = OrientationConstraint()
+    # orien_const.link_name = "right_gripper";
+    # orien_const.header.frame_id = "base";
+    # orien_const.orientation.z = -1.0;
+    # orien_const.absolute_x_axis_tolerance = 0.1;
+    # orien_const.absolute_y_axis_tolerance = 0.1;
+    # orien_const.absolute_z_axis_tolerance = 0.1;
+    # orien_const.weight = 2.0;
 
     
     right_gripper = robot_gripper.Gripper('right_gripper')
@@ -218,33 +225,65 @@ def main():
 
     #test
 
+
     tfBuffer = tf2_ros.Buffer()
     tfListener = tf2_ros.TransformListener(tfBuffer)
     error = True 
     while not rospy.is_shutdown() and error: 
         try: 
-            trans_1 = tfBuffer.lookup_transform('base', 'ar_marker_5', rospy.Time())
+            trans_1 = tfBuffer.lookup_transform('base', 'ar_marker_6', rospy.Time())
             error = False 
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             rospy.sleep(1) 
             error = True 
             continue 
 
-    print(trans_1)
+    # print(trans_1)
     print("_")
     t1 = trans_1.transform.translation
 
 
     pose = PoseStamped()
     pose.header.frame_id = 'base'
-    pose.pose.position.x = t1.x #error_1.x + error_2.x # in and out
-    pose.pose.position.y = t1.y # error_1.y + error_2.y # left to right
-    pose.pose.position.z = t1.z # error_1.z + error_2.z # down to up # ?? 
+    pose.pose.position.x = t1.x - 0.03 #error_1.x + error_2.x # in and out
+    pose.pose.position.y = t1.y - 0.070 # error_1.y + error_2.y # left to right
+    pose.pose.position.z = t1.z - 0.047 # error_1.z + error_2.z # down to up # ?? 
+    pose.pose.orientation.y = -1.0 
 
-    pose.pose.orientation.y = -1.0
+    size = np.array([.4, 1.2, 0.1])
+    table_pos = t1 
+    table_pos.z -= 0.2
+    table_pose = PoseStamped(pose=Pose(position=table_pos, orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)))
+    table_pose.header.frame_id = "base";
+    print(table_pose)
+    planner.add_box_obstacle(size, 'table', table_pose)
+
+    wall_size = np.array([0.1, 10.0, 10.0])
+    wall_pose = PoseStamped() 
+    wall_pose.pose.position.x = -0.672
+    wall_pose.pose.position.y = -0.620
+    wall_pose.pose.position.z = 0.576
+    wall_pose.header.frame_id = "base";
+    print(wall_pose)
+    planner.add_box_obstacle(wall_size, 'wall', wall_pose)
+
+    shell_2 = get_pose('ar_marker_5')
+    shell_2.pose.position.x -= 0.03
+    shell_2.pose.position.y -= 0.075
+    shell_2.pose.position.z -= 0.055
+
+    shell_3 = get_pose('ar_marker_8')
+    shell_3.pose.position.x -= 0.03
+    shell_3.pose.position.y -= 0.075
+    shell_3.pose.position.z -= 0.055
+    size = np.array([0.12, 0.05]) #shell size         TODO!!!!
+    planner.add_cylinder_obstacle(size, 'ar_marker_5', shell_2)
+    planner.add_cylinder_obstacle(size, 'ar_marker_8', shell_3)
+
+    #pose.pose.orientation.y = -1.0
     print(pose)
 
-    plan = planner.plan_to_pose(pose, [orien_const])
+    plan = planner.plan_to_pose(pose, [])
     planner.execute_plan(plan[1])              #move to mid
 
 
