@@ -213,20 +213,20 @@ def main():
 
     #Create a path constraint for the arm 
     
-    # orien_const = OrientationConstraint()
-    # orien_const.link_name = "right_gripper";
-    # orien_const.header.frame_id = "base";
-    # orien_const.orientation.z = -1.0;
-    # orien_const.absolute_x_axis_tolerance = 0.1;
-    # orien_const.absolute_y_axis_tolerance = 0.1;
-    # orien_const.absolute_z_axis_tolerance = 0.1;
-    # orien_const.weight = 2.0;
+    orien_const = OrientationConstraint()
+    orien_const.link_name = "right_gripper";
+    orien_const.header.frame_id = "base";
+    orien_const.orientation.y = -1.0;
+    orien_const.absolute_x_axis_tolerance = 0.1;
+    orien_const.absolute_y_axis_tolerance = 0.1;
+    orien_const.absolute_z_axis_tolerance = 0.1;
+    orien_const.weight = 1.0;
 
     
     right_gripper = robot_gripper.Gripper('right_gripper')
-    # right_gripper.open()
+    right_gripper.open()
 
-    # #test
+    #test
 
 
     tfBuffer = tf2_ros.Buffer()
@@ -242,23 +242,23 @@ def main():
             continue 
 
     # print(trans_1)
-    print("_")
+    # print("_")
     t1 = trans_1.transform.translation
 
 
     pose = PoseStamped()
     pose.header.frame_id = 'base'
-    pose.pose.position.x = t1.x - 0.03 # in and out
-    pose.pose.position.y = t1.y - 0.1  # left to right
-    pose.pose.position.z = t1.z - 0.125 ## down to up 
+    pose.pose.position.x = t1.x - 0.01 # in and out
+    pose.pose.position.y = t1.y #- 0.1  # left to right
+    pose.pose.position.z = t1.z + 0.09 #- 0.125 ## down to up 
     pose.pose.orientation.y = -1.0 
 
     size = np.array([.4, 1.2, 0.1])
     table_pos = t1 
-    table_pos.z -= 0.1
+    table_pos.z -= 0.08
     table_pose = PoseStamped(pose=Pose(position=table_pos, orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)))
     table_pose.header.frame_id = "base";
-    print(table_pose)
+    #print(table_pose)
     planner.add_box_obstacle(size, 'table', table_pose)
 
     wall_size = np.array([0.1, 10.0, 10.0])
@@ -267,64 +267,94 @@ def main():
     wall_pose.pose.position.y = -0.620
     wall_pose.pose.position.z = 0.576
     wall_pose.header.frame_id = "base";
-    print(wall_pose)
+    #print(wall_pose)
     planner.add_box_obstacle(wall_size, 'wall', wall_pose)
 
     shell_2 = get_pose('ar_marker_5')
     # shell_2.pose.position.x -= 0.03
     # shell_2.pose.position.y -= 0.075
-    shell_2.pose.position.z -= 0.03
+    shell_2.pose.position.z -= 0.02
 
     shell_3 = get_pose('ar_marker_8')
     # shell_3.pose.position.x -= 0.03
     # shell_3.pose.position.y -= 0.075
-    shell_3.pose.position.z -= 0.03
-    size = np.array([0.12, 0.05]) #shell size         TODO!!!!
+    shell_3.pose.position.z -= 0.02
+    size = np.array([0.2, 0.05]) #shell size         TODO!!!!
     planner.add_cylinder_obstacle(size, 'ar_marker_5', shell_2)
     planner.add_cylinder_obstacle(size, 'ar_marker_8', shell_3)
 
-    print("ar marker 5 pose ")
-    print(shell_2) 
+    # print("ar marker 5 pose ")
+    # print(shell_2) 
 
-    print("ar marker 8 pose")
-    print(shell_3) 
+    # print("ar marker 8 pose")
+    # print(shell_3) 
 
     print("goal pose")
     print(pose)
 
     #pose.pose.orientation.y = -1.0
-    print(pose)
+    # print(pose)
 
     plan = planner.plan_to_pose(pose, [])
     planner.execute_plan(plan[1])              #move to mid
 
-
+    print("about to close ... ")
     right_gripper.close()
 
     print("dragging")
     pos_const = PositionConstraint()
+    pos_const.header.frame_id = "base"
     pos_const.link_name = "right_gripper";
     box = SolidPrimitive()
     box.type = SolidPrimitive.BOX
-    box.dimensions = (5, 5, 0)
+    box.dimensions = (5, 5, 0.5)
     pos_const.constraint_region.primitives.append(box)
     pos_const.weight = 1.0
 
     proceed = input() 
 
-    dest = PoseStamped()
+    dest = Pose()
     right_grip = tfBuffer.lookup_transform('base', 'reference/right_gripper_tip', rospy.Time())
+    print("ar marker 6")
+    print(pose)
 
-    dest.pose.position.z = right_grip.transform.translation.z 
-    dest.pose.position.x = right_grip.transform.translation.x - 0.2 
-    dest.pose.position.y = right_grip.transform.translation.y + 0.2 
+    print("right grip ")
+    print(right_grip)
+    dest.position.z = right_grip.transform.translation.z 
+    dest.position.x = right_grip.transform.translation.x + 0.13
+    dest.position.y = right_grip.transform.translation.y + 0.13
+
+    print('dest')
+    print(dest)
 
     pos_const.constraint_region.primitive_poses.append(dest)
 
-    plan = planner.plan_to_pose(dest, [], [pos_const])
+    dest.orientation.y = -1.0 
+    dest_stamped = PoseStamped()
+    dest_stamped.pose = dest 
+    dest_stamped.header.frame_id = "base" 
+
+    plan = planner.plan_to_pose(dest_stamped, [], [pos_const])
+    print(plan)
     planner.execute_plan(plan[1])              #move to mid
     right_gripper.open()
     rospy.sleep(1.0)
+
+    p = get_pose('reference/right_gripper_tip')
+    # right_grip = tfBuffer.lookup_transform('base', 'reference/right_gripper_tip', rospy.Time())
+
+    # shell_2 = get_pose(shell_2_str)
+    # shell_3 = get_pose(shell_3_str)         #obstacle
+    planner.add_box_obstacle(size, 'ar_marker_6', p)
+    planner.remove_obstacle('ar_marker_5')
+    print('getting to 5')
+
+    ar_5_pose = get_pose('ar_marker_5')
+    plan = planner.plan_to_pose(ar_5_pose, [])
+    planner.execute_plan(plan[1])              #move to shell 2
+    right_gripper.close()
+    rospy.sleep(1.0)
+
 
     # switches = 0
     # while switches < 1:
