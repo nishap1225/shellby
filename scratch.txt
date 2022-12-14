@@ -45,3 +45,73 @@ tip = ar - 0.1
 = ar marker 5 
 
 error = [?, 0.104, ?]
+
+
+ROUND 2 
+- Translation: [0.642, -0.085, -0.090]
+- Rotation: in Quaternion [-0.031, 0.998, -0.028, -0.037]
+            in RPY (radian) [-3.087, -0.076, -3.082]
+            in RPY (degree) [-176.894, -4.335, -176.588]
+- gripper 
+
+At time 1670449220.593
+- Translation: [0.641, -0.095, -0.183]
+- Rotation: in Quaternion [-0.532, 0.488, -0.443, 0.531]
+            in RPY (radian) [-1.613, 0.048, -1.440]
+            in RPY (degree) [-92.429, 2.727, -82.495]
+- ar marker 
+
+At time 1670451941.736
+- Translation: [0.714, 0.150, -0.160]
+- Rotation: in Quaternion [0.025, 0.998, 0.010, 0.062]
+            in RPY (radian) [3.119, 0.123, 3.089]
+            in RPY (degree) [178.699, 7.068, 177.009]
+- table 
+
+- Translation: [0.618, 0.071, -0.191]
+- Rotation: in Quaternion [-0.482, 0.536, -0.500, 0.480]
+            in RPY (radian) [-1.610, 0.033, -1.646]
+            in RPY (degree) [-92.271, 1.888, -94.327]
+- ar marker right 
+
+PAUSE 
+At time 1670485108.892
+
+
+- Translation: [0.503, -0.085, -0.118]
+- Rotation: in Quaternion [0.118, 0.993, 0.025, 0.012]
+            in RPY (radian) [3.089, 0.019, 2.904]
+            in RPY (degree) [177.009, 1.075, 166.404]
+gripper 
+
+
+ar marker after rotating 
+At time 1670485495.490
+- Translation: [0.462, -0.108, -0.169]
+- Rotation: in Quaternion [0.031, 0.683, -0.070, 0.727]
+            in RPY (radian) [-0.664, 1.487, -0.808]
+            in RPY (degree) [-38.058, 85.210, -46.277]
+
+gr - ar = [0.04, 0.02, 0.05]
+table
+- Translation: [0.623, -0.163, -0.166]
+- Rotation: in Quaternion [-0.010, 1.000, 0.002, 0.027]
+            in RPY (radian) [3.139, 0.054, -3.122]
+            in RPY (degree) [179.852, 3.092, -178.886]
+^Cc105-9 [502] ~/ros_workspaces/shellby # rosrun tf tf_e
+marker 6
+- Translation: [0.625, 0.190, -0.110]
+- Rotation: in Quaternion [0.656, -0.009, 0.755, 0.003]
+            in RPY (radian) [-0.066, -1.431, -3.093]
+            in RPY (degree) [-3.792, -81.964, -177.222]
+gripper at marker 6
+- Translation: [0.599, 0.181, -0.085]
+- Rotation: in Quaternion [-0.015, 0.998, 0.063, 0.005]
+            in RPY (radian) [3.015, 0.012, -3.112]
+            in RPY (degree) [172.771, 0.662, -178.311]
+wall
+- Translation: [-0.628, 0.475, 0.536]
+- Rotation: in Quaternion [0.044, -0.636, -0.008, 0.771]
+            in RPY (radian) [0.391, -1.366, -0.341]
+            in RPY (degree) [22.426, -78.292, -19.520]
+
