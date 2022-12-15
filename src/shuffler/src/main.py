@@ -368,19 +368,13 @@ def main():
 
     switches = 0
     while switches < 1:
-        try:
 
-            shells = ['ar_marker_5', 'ar_marker_6', 'ar_marker_8']
-            indices = np.random.choice(np.arange(3), size=3, replace=False)
+        shells = ['ar_marker_5', 'ar_marker_6', 'ar_marker_8']
+        indices = np.random.choice(np.arange(3), size=3, replace=False)
 
-            switch_shells(shells[indices[0]], shells[indices[1]], shells[indices[2]], [0, 0, 0])
-            switches += 1
+        switch_shells(shells[indices[0]], shells[indices[1]], shells[indices[2]], [-.047, .9, -0.037])
+        switches += 1
 
-        except Exception as e:
-            print(e)
-            traceback.print_exc()
-            break
-                        
 
 if __name__ == '__main__':
     rospy.init_node('moveit_node')
