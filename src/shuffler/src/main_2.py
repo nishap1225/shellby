@@ -203,9 +203,9 @@ def main():
     Main Script
     """
 
-    x = [0.63, 0.80, 0.923]
-    z = -0.102
-    y = [0.118, -0.043, -0.201]
+    x = [0.572, 0.715, 0.852]
+    z = -0.12
+    y = [0.264, 0.089, -0.083]
     cup_poses = [[], [], []]
 
     # main poses 
@@ -216,7 +216,8 @@ def main():
         pose.pose.position.y = y_val 
         pose.pose.position.z = z
         pose.pose.orientation.y = -1.0
-        cup_poses[1].append(pose)
+        # cup_poses[1].append(pose)
+        cup_poses[1].append([x[1], y_val, z])
 
     # front and back 
     for i in range(2): 
@@ -226,7 +227,8 @@ def main():
         back_pose.pose.position.y = (y[i] + y[i+1])/2 
         back_pose.pose.position.z = z
         back_pose.pose.orientation.y = -1.0
-        cup_poses[2].append(back_pose)
+        # cup_poses[2].append(back_pose)
+        cup_poses[2].append([x[0], (y[i] + y[i+1])/2, z])
 
         front_pose = PoseStamped()
         front_pose.header.frame_id = "base"
@@ -234,7 +236,8 @@ def main():
         front_pose.pose.position.y = (y[i] + y[i+1])/2 
         front_pose.pose.position.z = z
         front_pose.pose.orientation.y = -1.0
-        cup_poses[0].append(front_pose)
+        # cup_poses[0].append(front_pose)
+        cup_poses[0].append([x[2], (y[i] + y[i+1])/2 , z])
 
     planner = PathPlanner("right_arm")
     Kp = 0.2 * np.array([0.4, 2, 1.7, 1.5, 2, 2, 3])
@@ -248,62 +251,81 @@ def main():
 
     planner.remove_obstacle('table')
     planner.remove_obstacle('wall')
-    planner.remove_obstacle('ar_marker_5')
-    planner.remove_obstacle('ar_marker_6')
-    planner.remove_obstacle('ar_marker_8')
-    planner.remove_obstacle('shell_1')
-    planner.remove_obstacle('shell_2')
-    planner.remove_obstacle('shell_3')
+    planner.remove_obstacle('cup_1')
+    planner.remove_obstacle('cup_2')
+    planner.remove_obstacle('cup_3')
 
     size = np.array([.4, 1.2, 0.1])
     table_pos = PoseStamped()
     table_pos.pose.position.x = 0.662
     table_pos.pose.position.y = -0.108
-    table_pos.pose.position.z =  -0.189
+    table_pos.pose.position.z =  -0.196
     table_pos.header.frame_id = "base";
     planner.add_box_obstacle(size, 'table', table_pos)
 
     wall_size = np.array([0.1, 10.0, 10.0])
     wall_pose = PoseStamped() 
-    wall_pose.pose.position.x = -0.748
+    wall_pose.pose.position.x = -0.260
     wall_pose.pose.position.y = 0.475
     wall_pose.pose.position.z = 0.536
     wall_pose.header.frame_id = "base";
     planner.add_box_obstacle(wall_size, 'wall', wall_pose)
 
+    pillar_size = np.array([.224, 0.1, 10.0])
+    pillar_pose = PoseStamped() 
+    pillar_pose.pose.position.x = -0.216
+    pillar_pose.pose.position.y = 0.394
+    pillar_pose.pose.position.z = 0.536
+    pillar_pose.header.frame_id = "base";
+    planner.add_box_obstacle(pillar_size, 'pillar', pillar_pose)
+
 
     # get middle cup 
     cup_size = np.array([0.12, 0.05]) 
 
-    planner.add_cylinder_obstacle(cup_size, 'cup_1', cup_poses[1][0])
-    planner.add_cylinder_obstacle(cup_size, 'cup_2', cup_poses[1][2])
+    planner.add_cylinder_obstacle(cup_size, 'cup_1', point_to_pose(cup_poses[1][0]))
+    planner.add_cylinder_obstacle(cup_size, 'cup_2', point_to_pose(cup_poses[1][1]))
+    planner.add_cylinder_obstacle(cup_size, 'cup_3', point_to_pose(cup_poses[1][2]))
     
+    # instead of planning directly to the cup, plan to a pose that is right above (on the z axis) and possibly at the cup as an obstacle? 
+    # then remove the obstacle and drop straight down with joint angle to reliably pick up 
     right_gripper = robot_gripper.Gripper('right_gripper')
     right_gripper.open() 
-    plan = planner.plan_to_pose(cup_poses[1][1], [], [])
-    print('going to get middle shell')
-    #controller.execute_plan(plan[1])              #move to shell 1
+    # middle_cup_dest = cup_poses[1][1][:]
+    # middle_cup_dest[2] += 0.1
+    # plan = planner.plan_to_pose(point_to_pose(middle_cup_dest), [], [])
+    # print('going above middle shell')
+    # print(point_to_pose(cup_poses[1][1]))
+    # planner.execute_plan(plan[1])              #move to shell 1
 
-    right_gripper.close()  
-    # switch middle and right 
-    # middle cup: goes from 1, 1 to 0, 0 
-    s = cup_poses[1][1]
-    e = cup_poses[0][0] 
+    tip = get_pose('right_gripper_tip')
+    tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
 
-    slope = (e.pose.position.y - s.pose.position.y)/(e.pose.position.x - s.pose.position.x)
-    # y = m(x - x1) + y1
-    func = lambda x: slope * (x - s.pose.position.x) + s.pose.position.y 
-    
+    middle_cup = cup_poses[1][1]
 
-    increment = 0.005 
-    p = s 
+    x_diff = middle_cup[0] - tip_coord[0] 
+    inc = x_diff / abs(x_diff) * 0.005
     names = limb.joint_names()
 
-    print("DIAGONAL")
-    while p.pose.position.x < e.pose.position.x and p.pose.position.y < e.pose.position.y: 
-        p.pose.position.y = func(p.pose.position.x + increment)
-        p.pose.position.x = p.pose.position.x + increment 
-        # print(p)
+    print("MOVE X")
+    print(tip_coord)
+    print(middle_cup)
+    p = point_to_pose(tip_coord)
+    e = point_to_pose(middle_cup)
+
+    print(inc)
+    condition = None 
+    if inc < 0: 
+        condition = lambda p: p.pose.position.x > e.pose.position.x 
+    else: 
+        print("positive")
+        condition = lambda p: p.pose.position.x < e.pose.position.x 
+
+    print(condition(p))
+    while condition(p):
+        p.pose.position.x = p.pose.position.x + inc  
+        p.pose.position.y = tip_coord[1]
+        p.pose.position.z = tip_coord[2]
 
         request = GetPositionIKRequest()
         request.ik_request.group_name = "right_arm"
@@ -313,20 +335,59 @@ def main():
         request.ik_request.pose_stamped = p 
 
         response = compute_ik(request)
+        if response.error_code.val != 1: 
+            print("ERROR " + str(response.error_code.val))
+            continue  
         theta_list = [response.solution.joint_state.position[0]]
         theta_list.extend(response.solution.joint_state.position[2:8])
         theta_dict = dict(zip(names, theta_list))
-        #set_j(limb, theta_dict)
-        rospy.sleep(1)
-        # print("___________________________")
+        set_j(limb, theta_dict)
+        rospy.sleep(.1)
 
-    right_gripper.open() 
+    y_diff = - tip_coord[1] + middle_cup[1] 
+    inc = y_diff / abs(y_diff) * 0.005
 
-    # move up 
-    print("MOVE UP")
-    p = e
-    while p.pose.position.z < p.pose.position.z + 0.1:
-        p.pose.position.z = p.pose.position.z + increment 
+    print("MOVE Y")
+    tip = get_pose('right_gripper_tip')
+    tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
+    p = point_to_pose(tip_coord)
+    e = point_to_pose(middle_cup)
+    condition = None 
+    if inc < 0: 
+        condition = lambda p: p.pose.position.y > e.pose.position.y 
+    else: 
+        condition = lambda p: p.pose.position.y < e.pose.position.y 
+
+    while condition(p):
+        p.pose.position.y = p.pose.position.y + inc  
+        p.pose.position.x = tip_coord[0]
+        p.pose.position.z = tip_coord[2]
+
+        request = GetPositionIKRequest()
+        request.ik_request.group_name = "right_arm"
+        request.ik_request.ik_link_name = "right_gripper_tip"
+        request.ik_request.pose_stamped.header.frame_id = "base"
+        
+        request.ik_request.pose_stamped = p 
+
+        response = compute_ik(request)
+        if response.error_code.val != 1: 
+            print("ERROR " + str(response.error_code.val))
+            continue  
+        theta_list = [response.solution.joint_state.position[0]]
+        theta_list.extend(response.solution.joint_state.position[2:8])
+        theta_dict = dict(zip(names, theta_list))
+        set_j(limb, theta_dict)
+        rospy.sleep(.1)
+
+    increment = 0.005
+    print("MOVE DOWN")
+    tip = get_pose('right_gripper_tip')
+    tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
+    p = point_to_pose(tip_coord)
+    e = point_to_pose(cup_poses[1][1])
+    while p.pose.position.z > e.pose.position.z:
+        p.pose.position.z = p.pose.position.z - increment 
 
         request = GetPositionIKRequest()
         request.ik_request.group_name = "right_arm"
@@ -341,24 +402,122 @@ def main():
         theta_list = [response.solution.joint_state.position[0]]
         theta_list.extend(response.solution.joint_state.position[2:8])
         theta_dict = dict(zip(names, theta_list))
-        #set_j(limb, theta_dict)
-        rospy.sleep(1)
+        set_j(limb, theta_dict)
+        rospy.sleep(.1)
+
+
+    x = input() 
+    right_gripper.close() 
+
+    # switch middle and right 
+    # middle cup: goes from 1, 1 to 0, 0 
+    s = point_to_pose(cup_poses[1][1])
+    e = point_to_pose(cup_poses[0][0])
+
+
+    slope = (e.pose.position.y - s.pose.position.y)/(e.pose.position.x - s.pose.position.x)
+    func = lambda x: slope * (x - s.pose.position.x) + s.pose.position.y 
+
+    p = point_to_pose(cup_poses[1][1])
+
+    print("DIAGONAL")
+    print("starting pose")
+    print(p)
+    print("ending pose")
+    print(e)
+    while p.pose.position.x < e.pose.position.x and p.pose.position.y < e.pose.position.y: 
+        p.pose.position.y = func(p.pose.position.x + increment)
+        p.pose.position.x = p.pose.position.x + increment 
+
+        print(".")
+        print(p)
+
+        request = GetPositionIKRequest()
+        request.ik_request.group_name = "right_arm"
+        request.ik_request.ik_link_name = "right_gripper_tip"
+        request.ik_request.pose_stamped.header.frame_id = "base"
+        
+        request.ik_request.pose_stamped = p 
+
+        response = compute_ik(request)
+        if response.error_code.val != 1:
+            print("error code " + str(response.error_code.val))     
+            continue  
+
+        theta_list = [response.solution.joint_state.position[0]]
+        theta_list.extend(response.solution.joint_state.position[2:8])
+        theta_dict = dict(zip(names, theta_list))
+        set_j(limb, theta_dict)
+        rospy.sleep(.1)
+
+    right_gripper.open() 
+
+    # move up 
+    print("MOVE UP")
+    p = point_to_pose(cup_poses[0][0])
+    up = cup_poses[0][0][:]
+    up[2] += 0.1
+    e = point_to_pose(up)
+    while p.pose.position.z < e.pose.position.z:
+        p.pose.position.z = p.pose.position.z + increment 
+
+        request = GetPositionIKRequest()
+        request.ik_request.group_name = "right_arm"
+        request.ik_request.ik_link_name = "right_gripper_tip"
+        request.ik_request.pose_stamped.header.frame_id = "base"
+        
+        request.ik_request.pose_stamped = p 
+
+        response = compute_ik(request)
+        if response.error_code.val != 1: 
+            print("error code " + str(response.error_code.val))     
+            continue  
+        theta_list = [response.solution.joint_state.position[0]]
+        theta_list.extend(response.solution.joint_state.position[2:8])
+        theta_dict = dict(zip(names, theta_list))
+        set_j(limb, theta_dict)
+        rospy.sleep(.1)
 
     # get right cup 
     print("get right cup")
-    planner.remove_obstacle('cup_1')
-    planner.add_cylinder_obstacle(cup_size, 'cup_3', cup_poses[0][0])
-    plan = planner.plan_to_pose(cup_poses[1][0], [], [])
-    print('going to get middle shell')
-    # controller.execute_plan(plan[1])              #move to shell 1
+    right_cup_dest = cup_poses[1][0][:]
+    right_cup_dest[2] += 0.1
+
+    plan = planner.plan_to_pose(point_to_pose(right_cup_dest), [], [])
+    planner.execute_plan(plan[1])              #move to shell 1
+
+    # move down 
+    print("MOVE DOWN")
+    p = point_to_pose(right_cup_dest)
+    e = point_to_pose(cup_poses[1][0])
+    while p.pose.position.z > e.pose.position.z:
+        p.pose.position.z = p.pose.position.z - increment 
+
+        request = GetPositionIKRequest()
+        request.ik_request.group_name = "right_arm"
+        request.ik_request.ik_link_name = "right_gripper_tip"
+        request.ik_request.pose_stamped.header.frame_id = "base"
+        
+        request.ik_request.pose_stamped = p 
+
+        response = compute_ik(request)
+        if response.error_code.val != 1: 
+            break 
+        theta_list = [response.solution.joint_state.position[0]]
+        theta_list.extend(response.solution.joint_state.position[2:8])
+        theta_dict = dict(zip(names, theta_list))
+        set_j(limb, theta_dict)
+        rospy.sleep(.1)
 
     right_gripper.close() 
 
     # right cup goes from 1, 0 to 1, 1 
-    p = cup_poses[1][0]
-    e = cup_poses[1][1] 
+    p = point_to_pose(cup_poses[1][0])
+    e = point_to_pose(cup_poses[1][1])
 
     print("move right cup left")
+    print("end pose")
+    print(e)
     while p.pose.position.y > e.pose.position.y: 
         p.pose.position.y = p.pose.position.y - increment
 
@@ -377,10 +536,20 @@ def main():
         theta_list.extend(response.solution.joint_state.position[2:8])
         theta_dict = dict(zip(names, theta_list))
         set_j(limb, theta_dict)
-        rospy.sleep(1)
-        # print("___________________________")
+        rospy.sleep(.1)
     
+    right_gripper.open() 
     # middle cup goes from 0, 0 to 1, 0 
+
+def point_to_pose(coords):
+    pose = PoseStamped() 
+    pose.pose.position.x = coords[0]
+    pose.pose.position.y = coords[1]
+    pose.pose.position.z = coords[2]
+    pose.pose.orientation.y = -1.0
+    pose.header.frame_id = "base";
+    return pose
+
 
 
 if __name__ == '__main__':

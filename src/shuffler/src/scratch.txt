@@ -1,0 +1,24 @@
+MIDDLE MIDDLE
+- Translation: [0.707, 0.079, -0.116]
+
+MIDDLE LEFT
+- Translation: [0.700, -0.093, -0.093]
+
+
+MIDDLE RIGHT
+- Translation: [0.709, 0.254, -0.125]
+
+BACK RIGHT
+- Translation: [0.560, 0.244, -0.102]
+
+BACK MIDDLE
+- Translation: [0.564, 0.072, -0.095]
+
+FRONT RIGHT
+- Translation: [0.842, 0.264, -0.102]
+
+TABLE
+- Translation: [0.778, 0.111, -0.166]
+
+WALL
+- Translation: [-0.211, -0.110, 0.675]
