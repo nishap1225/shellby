@@ -1,25 +1,14 @@
 #!/usr/bin/env python
-"""
-Path Planning Script for Shellby
-Author: Matthew Sahim & Reena Yuan
-"""
-import sys
 from intera_interface import Limb
 import rospy
-import numpy as np
-import traceback
 from intera_interface import gripper as robot_gripper
 import tf2_ros
-import math 
 
-from moveit_msgs.msg import OrientationConstraint, PositionConstraint
-from geometry_msgs.msg import PoseStamped, Point, Quaternion, Pose
+from geometry_msgs.msg import PoseStamped
 
 from path_planner import PathPlanner
-from shape_msgs.msg import SolidPrimitive
 
-from controller import Controller
-from moveit_msgs.srv import GetPositionIK, GetPositionIKRequest, GetPositionIKResponse
+from moveit_msgs.srv import GetPositionIK, GetPositionIKRequest
 
 INCREMENT_SIZE = 0.005 
 SLEEP = 0.1 
@@ -122,8 +111,6 @@ def move_xy(s, e, limb): # in list form not pose
 
     x_diff = e[0] - s[0] 
     
-    print("S = " + str(s))
-    print("E = " + str(e))
     if abs(x_diff) <= EPS:
         move_y(s, e, limb)
         return 
@@ -144,7 +131,6 @@ def move_xy(s, e, limb): # in list form not pose
         condition = lambda a, b: a.pose.position.x < b.pose.position.x 
 
     while condition(p, e_p): 
-        print(p)
         p.pose.position.y = func(p.pose.position.x + inc)
         p.pose.position.x = p.pose.position.x + inc 
         p.pose.position.z = z 
@@ -221,78 +207,63 @@ def switch_adjacent(c1, c2, limb, cup_poses):
     tip = get_pose('right_gripper_tip')
     tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
 
-    print("Move xy towards middle cup.")
     move_xy(tip_coord, middle_cup, limb)
 
     tip = get_pose('right_gripper_tip')
     tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
-    print("Move down towards middle cup.")
     move_z(tip_coord, middle_cup, limb)
 
-    print("Waiting to close gripper ... ")
     x = input() 
     right_gripper.close() 
 
     # Switch  middle and right cups  
     # middle cup: goes from 1, 1 to 0, 0
-    print("Move middle cup out of the way.")
     move_xy(middle_cup, int_cup, limb)
 
     right_gripper.open() 
     rospy.sleep(1)
 
-    print("Move up to get out of the way.")
     up_dest = int_cup[:]
     up_dest[2] += 0.1
     move_z(int_cup, up_dest, limb)
 
     tip = get_pose('right_gripper_tip')
     tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
-    print("Move along xy plan to the right cup.")
     move_xy(tip_coord, other_cup, limb)
 
     tip = get_pose('right_gripper_tip')
     tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
-    print("Move down to capture the right cup. ")
     move_z(tip_coord, other_cup, limb)
 
-    print("Waiting to close gripper ... ")
     x = input() 
     right_gripper.close() 
 
-    print("Move right cup to middle position")
     move_y(other_cup, middle_cup, limb)
 
     right_gripper.open()
     rospy.sleep(1) 
 
-    print("Move up to get out of the way.")
     up_dest = middle_cup[:]
     up_dest[2] += 0.1
     move_z(middle_cup, up_dest, limb)
 
     tip = get_pose('right_gripper_tip')
     tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
-    print("Move along xy plan to the right cup.")
     move_xy(tip_coord, int_cup, limb)
 
     tip = get_pose('right_gripper_tip')
     tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
-    print("Move down to capture the right cup. ")
     move_z(tip_coord, int_cup, limb)
 
-    print("Waiting to close gripper ... ")
     x = input()
 
     right_gripper.close() 
 
-    print("Move middle cup to right cup's position.")
     move_xy(int_cup, other_cup, limb)
 
     right_gripper.open() 
     rospy.sleep(1)
 
-    print("Move up to get out of the way.")
     up_dest = other_cup[:]
     up_dest[2] += 0.3
     move_z(other_cup, up_dest, limb)
@@ -306,95 +277,75 @@ def switch_outside(limb, cup_poses):
 
     tip = get_pose('right_gripper_tip')
     tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
-    print("HEREEEE ")
-    print(tip_coord)
-    print(left_cup)
 
-    print("Move xy towards left cup.")
     move_xy(tip_coord, left_cup, limb)
 
     tip = get_pose('right_gripper_tip')
     tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
-    print("Move down towards left cup.")
     move_z(tip_coord, left_cup, limb)
 
-    print("Waiting to close gripper ... ")
     x = input() 
     right_gripper.close() 
 
     # Switch  middle and right cups  
     # middle cup: goes from 1, 1 to 0, 0
-    print("Move left cup to front pos 1.")
     move_xy(left_cup, cup_poses[0][1], limb)
 
-    print("Move left cup to front pos 2")
     move_y(cup_poses[0][1], cup_poses[0][0], limb)
 
     right_gripper.open() 
     rospy.sleep(1)
 
-    print("Move up to get out of the way.")
     up_dest = cup_poses[0][0][:]
     up_dest[2] += 0.1
     move_z(cup_poses[0][0], up_dest, limb)
 
     tip = get_pose('right_gripper_tip')
     tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
-    print("Move along xy plan to the right cup.")
     move_xy(tip_coord, right_cup, limb)
 
     tip = get_pose('right_gripper_tip')
     tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
-    print("Move down to capture the right cup. ")
     move_z(tip_coord, right_cup, limb)
 
-    print("Waiting to close gripper ... ")
     x = input() 
     right_gripper.close() 
 
-    print("Move right cup to back position 1")
     move_xy(right_cup, cup_poses[2][0], limb)
 
-    print("Move right cup to back position 2")
     move_y(cup_poses[2][0], cup_poses[2][1], limb)
 
-    print("Move right cup to left pos")
     move_xy(cup_poses[2][1], left_cup, limb)
 
     right_gripper.open()
     rospy.sleep(1) 
 
-    print("Move up to get out of the way.")
     up_dest = left_cup[:]
     up_dest[2] += 0.1
     move_z(left_cup, up_dest, limb)
 
     tip = get_pose('right_gripper_tip')
     tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
-    print("Move along xy plan to the right cup.")
     move_xy(tip_coord, cup_poses[0][0], limb)
 
     tip = get_pose('right_gripper_tip')
     tip_coord = [tip.pose.position.x, tip.pose.position.y, tip.pose.position.z]
-    print("Move down to capture the right cup. ")
     move_z(tip_coord, cup_poses[0][0], limb)
 
-    print("Waiting to close gripper ... ")
     x = input()
 
     right_gripper.close() 
 
-    print("Move middle cup to right cup's position.")
     move_xy(cup_poses[0][0], right_cup, limb)
 
     right_gripper.open() 
     rospy.sleep(1)
 
-    print("Move up to get out of the way.")
     up_dest = other_cup[:]
     up_dest[2] += 0.3
     move_z(other_cup, up_dest, limb)
 
+# Note: Need to push from lab computer 
 def main():
     """
     Main Script
